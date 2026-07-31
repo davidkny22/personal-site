@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>david kogan</title>
+<meta name="description" content="self-taught ai researcher. building an open source ai efficiency lab.">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --quiet: #6f6f6f;
+    --hairline: #e6e6e6;
+    --tint-a: #eef4fb;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: #ffffff; }
+  body {
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink);
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 96px 20px 64px;
+  }
+  a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+  a:hover { background: var(--tint-a); }
+  a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 12px 28px; flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+  .name { font-weight: 600; }
+  .claim { color: var(--quiet); }
+  .links { display: flex; gap: 20px; flex-wrap: wrap; }
+
+  section { margin-bottom: 36px; }
+  h2 { font-size: 14px; font-weight: 400; color: var(--quiet); margin-bottom: 12px; }
+  h2::before { content: "# "; }
+
+  p { margin-bottom: 8px; }
+  p:last-child { margin-bottom: 0; }
+  .note { display: block; color: #4a4a4a; margin-top: 2px; }
+
+  ul { list-style: none; }
+  li { margin-bottom: 16px; }
+  li:last-child { margin-bottom: 0; }
+
+  .receipt {
+    color: var(--quiet);
+    margin-bottom: 16px; min-height: 21px;
+    opacity: 0; transition: opacity 120ms ease;
+  }
+  .receipt.ready { opacity: 1; }
+  .receipt b { color: var(--ink); font-weight: 400; }
+  @media (prefers-reduced-motion: reduce) { .receipt { transition: none; } }
+
+  .repo { margin-bottom: 16px; }
+  .repo:last-child { margin-bottom: 0; }
+  .repo-name { text-transform: lowercase; margin-bottom: 3px; }
+  .pr { display: flex; gap: 12px; align-items: baseline; }
+  .pr-state { color: var(--quiet); flex: 0 0 5.25rem; }
+  .pr-title { color: var(--quiet); text-transform: lowercase; }
+  @media (max-width: 34rem) {
+    .pr { display: block; }
+    .pr-state { display: inline; }
+  }
+
+  footer {
+    color: var(--quiet);
+    margin-top: 44px; padding-top: 12px;
+    border-top: 1px solid var(--hairline);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div><span class="name">david kogan</span> <span class="claim">&nbsp;self-taught ai researcher</span></div>
+  <div class="links">
+    <a href="https://github.com/davidkny22">github</a>
+    <a href="https://x.com/davidkogan_">x</a>
+    <a href="mailto:davidkny22@gmail.com">reach me</a>
+  </div>
+</header>
+
+<section>
+  <h2>bio</h2>
+  <p>i'm <span id="age">21</span>. built my first pc at 11. homebrewed my 3ds for pokemon
+     nuzlockes.<br>hex-edited games to get outside the map. i love breaking the rules.</p>
+  <p>technion pre-engineering, left after a missile hit campus. economics undergrad at
+     binghamton.</p>
+  <p>taught myself ml from scratch, december 2025.</p>
+  <p>spent six months on hardware-enforced alignment.<br>pivoted, it only served closed labs
+     (<a href="https://www.linkedin.com/pulse/safety-control-david-kogan-z4jde/">safety is not control</a>).</p>
+  <p>now: building an open source ai efficiency lab.<br>frontier ai, radically cheaper to train
+     and run.</p>
+  <p>looking for a cofounder (<a href="mailto:davidkny22@gmail.com">email me</a>).</p>
+  <p>conceptual builder, not traditional coder. i design, my agents work.</p>
+  <p>founding engineer at <a href="https://duino.cc">duino</a>, now technical advisor.</p>
+</section>
+
+<section>
+  <h2>upstream</h2>
+  <div class="receipt" id="receipt"></div>
+  <div id="prs"></div>
+</section>
+
+<section>
+  <h2>projects</h2>
+  <ul>
+    <li><a href="https://github.com/davidkny22/turboadam">turboadam</a>
+      <span class="note">drop-in adam replacement. 9.845x smaller optimizer state than adamw,
+      6.50 bits per parameter. +1.224% on tinystories, -0.094% on wikitext-103, matched 500-step
+      gpt-2 124m runs. <a href="https://pypi.org/project/turboadam/">on pypi</a>.</span></li>
+
+    <li><a href="https://github.com/davidkny22/dcaf-public">dcaf</a> and
+      <a href="https://davidkny22.github.io/Noosphere">noosphere</a>
+      <span class="note">interpretability tools. circuit discovery using fine-tuning as a
+      controlled perturbation, and a 3d explorer for embedding spaces.</span></li>
+
+    <li><a href="https://github.com/davidkny22/arrow-field-embeddings">arrow field embeddings</a>
+      <span class="note">keeps what a 3d projection throws away, encoded as arrow direction and
+      magnitude. benchmarks in progress.</span></li>
+
+    <li><a href="https://github.com/davidkny22/easywheels-cli">easywheels</a>
+      <span class="note">prebuilt cuda wheels, no 30 to 120 minute source builds. retired when
+      uv's team started building the same thing.</span></li>
+  </ul>
+</section>
+
+<section>
+  <h2>research</h2>
+  <ul>
+    <li>for the lab, in development
+      <span class="note">an ffn that skips about 85% of per-token ffn compute, within about 6%
+      of standard in small-scale tests. a low-bit residual master weight at about 89% perplexity
+      parity, 6.75 bits. optimizer infrastructure that generates its own kernels. a ternary
+      training format.</span></li>
+
+    <li><a href="https://github.com/davidkny22/navier-stokes-conditional">navier-stokes</a>
+      <span class="note">an enstrophy-weighted directional fisher information regularity
+      criterion. conditional, not a proof of global regularity. many rounds of ai red teaming,
+      no human expert has checked it.</span></li>
+
+    <li><a href="https://github.com/davidkny22/entropy-attention">entropy-attention</a> and
+      <a href="https://github.com/davidkny22/r-attention">r-attention</a>
+      <span class="note">two attention mechanisms i designed and tested. neither beat standard
+      attention across an 8-task battery. published anyway.</span></li>
+
+    <li>cytorch
+      <span class="note">biological neuron simulator. reproduced habituation, sensitization and
+      classical conditioning in an aplysia gill-withdrawal circuit within published ranges, no
+      hardcoded learning rules. in development.</span></li>
+  </ul>
+</section>
+
+<footer>brooklyn, new york</footer>
+
+<script>
+/* age, so the number stays right without anyone remembering to change it */
+(function () {
+  var born = new Date(2004, 8, 9), now = new Date();
+  var age = now.getFullYear() - born.getFullYear();
+  var before = now.getMonth() < born.getMonth() ||
+    (now.getMonth() === born.getMonth() && now.getDate() < born.getDate());
+  document.getElementById("age").textContent = before ? age - 1 : age;
+})();
+
+/* upstream, counted and listed live so no number here is one anybody typed.
+   scope: pull requests i authored in repositories i do not own.
+   EXCLUDED is a deliberate carve-out, kept visible rather than buried in a query string. */
+(function () {
+  var API = "https://api.github.com/search/issues?q=";
+  var AUTHOR = "davidkny22";
+  var EXCLUDED = ["ShantanuShukla1/Royal-Blue"];
+
+  var scope = "type:pr author:" + AUTHOR + " -user:" + AUTHOR +
+    EXCLUDED.map(function (r) { return " -repo:" + r; }).join("");
+
+  var el = document.getElementById("receipt");
+  var list = document.getElementById("prs");
+  var SEARCH = "https://github.com/search?type=pullrequests&q=" + encodeURIComponent(scope);
+
+  function get(q) {
+    return fetch(API + encodeURIComponent(q) + "&per_page=100", {
+      headers: { "Accept": "application/vnd.github+json" }
+    }).then(function (r) {
+      if (!r.ok) { throw new Error(r.status); }
+      return r.json();
+    });
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+
+  function repoOf(item) {
+    var p = item.repository_url.split("/");
+    return p[p.length - 2] + "/" + p[p.length - 1];
+  }
+
+  /* merged outranks approved outranks open, because that is the evidence order */
+  function rank(pr) { return pr.state === "merged" ? 0 : pr.state === "approved" ? 1 : 2; }
+
+  Promise.all([get(scope), get(scope + " is:open review:approved")])
+    .then(function (res) {
+      var items = res[0].items || [];
+      if (!items.length) { throw new Error("empty"); }
+
+      var approved = {};
+      (res[1].items || []).forEach(function (i) { approved[i.html_url] = true; });
+
+      var counts = { merged: 0, approved: 0, open: 0, closed: 0 };
+      var byRepo = {};
+
+      items.forEach(function (i) {
+        var state = (i.pull_request && i.pull_request.merged_at) ? "merged"
+          : approved[i.html_url] ? "approved"
+          : i.state;
+        if (counts[state] !== undefined) { counts[state]++; }
+        var r = repoOf(i);
+        (byRepo[r] = byRepo[r] || []).push({
+          number: i.number, title: i.title, url: i.html_url, state: state
+        });
+      });
+
+      var parts = ["<b>" + items.length + "</b> pull requests to repositories i don't own"];
+      ["merged", "approved", "open", "closed"].forEach(function (k) {
+        if (counts[k]) { parts.push("<b>" + counts[k] + "</b> " + k); }
+      });
+      el.innerHTML = parts.join(", ");
+      el.classList.add("ready");
+
+      var repos = Object.keys(byRepo).sort(function (a, b) {
+        return byRepo[b].length - byRepo[a].length || a.localeCompare(b);
+      });
+
+      list.innerHTML = repos.map(function (r) {
+        var prs = byRepo[r].sort(function (a, b) {
+          return rank(a) - rank(b) || b.number - a.number;
+        });
+        return '<div class="repo"><div class="repo-name">' + esc(r) + '</div>' +
+          prs.map(function (p) {
+            return '<div class="pr"><span class="pr-state">' + p.state + '</span>' +
+              '<span><a href="' + esc(p.url) + '">#' + p.number + '</a> ' +
+              '<span class="pr-title">' + esc(p.title) + '</span></span></div>';
+          }).join("") + '</div>';
+      }).join("");
+    })
+    .catch(function () {
+      /* never fall back to numbers nobody fetched. point at the live source instead. */
+      list.innerHTML = '<p class="note"><a href="' + SEARCH +
+        '">pull requests i have opened in repositories i don\'t own</a></p>';
+    });
+})();
+</script>
+</body>
+</html>
