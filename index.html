@@ -232,21 +232,48 @@
       var approved = {};
       (res[1].items || []).forEach(function (i) { approved[i.html_url] = true; });
 
+      var entries = items.map(function (i) {
+        return {
+          repo: repoOf(i), number: i.number, title: i.title, url: i.html_url,
+          state: (i.pull_request && i.pull_request.merged_at) ? "merged"
+            : approved[i.html_url] ? "approved"
+            : i.state
+        };
+      });
+
+      /* the search above only sees prs whose overall review decision is approved.
+         a pr a maintainer approved that still waits on required reviewers reads as
+         open there, so ask each remaining open pr for its reviews directly, taking
+         each reviewer's latest state. any failure leaves the row as the search saw it. */
+      var pending = entries.filter(function (e) { return e.state === "open"; }).slice(0, 10);
+      return Promise.all(pending.map(function (e) {
+        return fetch("https://api.github.com/repos/" + e.repo + "/pulls/" + e.number + "/reviews", {
+          headers: { "Accept": "application/vnd.github+json" }
+        }).then(function (r) { return r.ok ? r.json() : []; }).then(function (revs) {
+          var last = {};
+          (revs || []).forEach(function (rv) {
+            if (rv.user && (rv.state === "APPROVED" || rv.state === "CHANGES_REQUESTED" ||
+                rv.state === "DISMISSED")) {
+              last[rv.user.login] = rv.state;
+            }
+          });
+          var states = Object.keys(last).map(function (k) { return last[k]; });
+          if (states.indexOf("APPROVED") >= 0 && states.indexOf("CHANGES_REQUESTED") < 0) {
+            e.state = "approved";
+          }
+        }).catch(function () {});
+      })).then(function () { return entries; });
+    })
+    .then(function (entries) {
       var counts = { merged: 0, approved: 0, open: 0, closed: 0 };
       var byRepo = {};
 
-      items.forEach(function (i) {
-        var state = (i.pull_request && i.pull_request.merged_at) ? "merged"
-          : approved[i.html_url] ? "approved"
-          : i.state;
-        if (counts[state] !== undefined) { counts[state]++; }
-        var r = repoOf(i);
-        (byRepo[r] = byRepo[r] || []).push({
-          number: i.number, title: i.title, url: i.html_url, state: state
-        });
+      entries.forEach(function (e) {
+        if (counts[e.state] !== undefined) { counts[e.state]++; }
+        (byRepo[e.repo] = byRepo[e.repo] || []).push(e);
       });
 
-      var parts = ["<b>" + items.length + "</b> pull requests to repositories i don't own"];
+      var parts = ["<b>" + entries.length + "</b> pull requests to repositories i don't own"];
       ["merged", "approved", "open", "closed"].forEach(function (k) {
         if (counts[k]) { parts.push("<b>" + counts[k] + "</b> " + k); }
       });
