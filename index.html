@@ -320,6 +320,7 @@
 
 /* the field: a dot sea; while the cursor dwells in the margins, a small vortex
    spins around it, spiral arms wound by distance and turned by time.
+   a click in the sea drops one wave that radiates out and dies.
    still everywhere the visitor is not. */
 (function () {
   var el = document.getElementById("field");
@@ -330,8 +331,10 @@
   var GLYPH = ["-", String.fromCharCode(92), "|", "/"];
   var ROWS = 40, COLS = 200, CW = 8, LH = 15, R = 140;
   var WIND = 0.05, SPIN = 0.0016;
+  var WSPD = 0.28, WMAX = 1100, WBAND = 5;
   var mx = -9999, my = -9999, hovering = false, animId = 0;
   var mainL = 0, mainR = 0;
+  var waves = [];
 
   function measure() {
     var probe = document.createElement("span");
@@ -363,12 +366,27 @@
       var cy = r * LH + LH / 2;
       for (var c = 0; c < COLS; c++) {
         var cx = c * CW + CW / 2;
-        var dx = cx - mx, dy = cy - my;
-        var d = Math.sqrt(dx * dx + dy * dy);
-        if (d > R) { line += DOT; continue; }
-        var a = Math.atan2(dy, dx) + d * WIND - spin;
-        var bin = Math.round(a / (Math.PI / 4)) & 3;
-        line += GLYPH[bin];
+        var ch = null;
+        for (var w = 0; w < waves.length; w++) {
+          var wv = waves[w];
+          var wdx = cx - wv.x, wdy = cy - wv.y;
+          var wd = Math.sqrt(wdx * wdx + wdy * wdy);
+          var rw = (now - wv.t0) * WSPD;
+          if (Math.abs(wd - rw) > WBAND) { continue; }
+          /* the ring frays as it travels, so a far wave whispers instead of strobing */
+          if (((c * 31 + r * 17 + w * 7) % 16) / 16 > 1 - rw / WMAX) { continue; }
+          ch = GLYPH[Math.round((Math.atan2(wdy, wdx) + Math.PI / 2) / (Math.PI / 4)) & 3];
+          break;
+        }
+        if (!ch && hovering) {
+          var dx = cx - mx, dy = cy - my;
+          var d = Math.sqrt(dx * dx + dy * dy);
+          if (d <= R) {
+            var a = Math.atan2(dy, dx) + d * WIND - spin;
+            ch = GLYPH[Math.round(a / (Math.PI / 4)) & 3];
+          }
+        }
+        line += ch || DOT;
       }
       out.push(line);
     }
@@ -376,7 +394,10 @@
   }
 
   function loop(now) {
-    if (!hovering) { animId = 0; rest(); return; }
+    for (var i = waves.length - 1; i >= 0; i--) {
+      if ((now - waves[i].t0) * WSPD > WMAX) { waves.splice(i, 1); }
+    }
+    if (!hovering && !waves.length) { animId = 0; rest(); return; }
     render(now);
     animId = requestAnimationFrame(loop);
   }
@@ -395,6 +416,13 @@
     } else if (over && reduced) { render(0); }
   }, { passive: true });
   addEventListener("mouseleave", function () { hovering = false; if (reduced) { rest(); } });
+  addEventListener("click", function (e) {
+    if (reduced) { return; }
+    if (e.clientX >= mainL && e.clientX <= mainR) { return; }
+    if (waves.length >= 6) { waves.shift(); }
+    waves.push({ x: e.clientX, y: e.clientY, t0: performance.now() });
+    if (!animId) { animId = requestAnimationFrame(loop); }
+  });
   addEventListener("resize", function () { measure(); rest(); });
 })();
 </script>
