@@ -73,7 +73,16 @@
 
   .repo { margin-bottom: 16px; }
   .repo:last-child { margin-bottom: 0; }
-  .repo-name { text-transform: lowercase; margin-bottom: 3px; }
+  .repo summary { cursor: pointer; list-style: none; }
+  .repo summary::before { content: "+ "; color: var(--quiet); }
+  .repo[open] summary::before { content: "- "; }
+  .repo summary::-webkit-details-marker { display: none; }
+  .repo summary:hover { background: var(--tint-a); }
+  .repo summary:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .repo[open] summary { margin-bottom: 3px; }
+  .repo-name { text-transform: lowercase; }
+  .repo-counts { color: var(--quiet); }
+  .repo-counts b { color: var(--ink); font-weight: 400; }
   .pr { display: flex; gap: 12px; align-items: baseline; }
   .pr-state { color: var(--quiet); flex: 0 0 5.25rem; }
   .pr-title { color: var(--quiet); text-transform: lowercase; }
@@ -288,12 +297,18 @@
         var prs = byRepo[r].sort(function (a, b) {
           return rank(a) - rank(b) || b.number - a.number;
         });
-        return '<div class="repo"><div class="repo-name">' + esc(r) + '</div>' +
+        var c = { merged: 0, approved: 0, open: 0, closed: 0 };
+        prs.forEach(function (p) { if (c[p.state] !== undefined) { c[p.state]++; } });
+        var inline = ["merged", "approved", "open", "closed"].filter(function (k) {
+          return c[k];
+        }).map(function (k) { return "<b>" + c[k] + "</b> " + k; }).join(" · ");
+        return '<details class="repo"><summary><span class="repo-name">' + esc(r) +
+          '</span> <span class="repo-counts">' + inline + '</span></summary>' +
           prs.map(function (p) {
             return '<div class="pr"><span class="pr-state">' + p.state + '</span>' +
               '<span><a href="' + esc(p.url) + '">#' + p.number + '</a> ' +
               '<span class="pr-title">' + esc(p.title) + '</span></span></div>';
-          }).join("") + '</div>';
+          }).join("") + '</details>';
       }).join("");
     })
     .catch(function () {
